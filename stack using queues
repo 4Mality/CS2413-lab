@@ -1,0 +1,120 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#define MAX_SIZE 100  // Define maximum queue size
+
+// Queue structure
+typedef struct {
+    int data[MAX_SIZE];
+    int front, rear;
+} Queue;
+
+// Initialize queue
+void queueInit(Queue* q) {
+    q->front = q->rear = -1;
+}
+
+// Check if queue is empty
+bool queueEmpty(Queue* q) {
+    return q->front == -1 || q->front > q->rear;
+}
+
+// Enqueue element
+void enqueue(Queue* q, int x) {
+    if (q->rear == MAX_SIZE - 1) return;  // Overflow check
+    if (q->front == -1) q->front = 0;
+    q->data[++q->rear] = x;
+}
+
+// Dequeue element
+int dequeue(Queue* q) {
+    if (queueEmpty(q)) return -1;  // Underflow check
+    int val = q->data[q->front++];
+    if (q->front > q->rear)
+        q->front = q->rear = -1; // Reset if empty
+    return val;
+}
+
+// Peek front element
+int queuePeek(Queue* q) {
+    if (queueEmpty(q)) return -1;
+    return q->data[q->front];
+}
+
+// Stack structure using two queues
+typedef struct {
+    Queue queue1;  // Main queue
+    Queue queue2;  // Temporary queue
+} MyStack;
+
+// Initialize stack
+MyStack* myStackCreate() {
+    MyStack* stack = (MyStack*)malloc(sizeof(MyStack));
+    queueInit(&stack->queue1);
+    queueInit(&stack->queue2);
+    return stack;
+}
+
+// Push element onto stack
+void myStackPush(MyStack* obj, int x) {
+    // Enqueue into queue2
+    enqueue(&obj->queue2, x);
+
+    // Transfer all elements from queue1 to queue2
+    while (!queueEmpty(&obj->queue1)) {
+        enqueue(&obj->queue2, dequeue(&obj->queue1));
+    }
+
+    // Swap queues: queue2 becomes the main queue
+    Queue temp = obj->queue1;
+    obj->queue1 = obj->queue2;
+    obj->queue2 = temp;
+}
+
+// Removes the top element and returns it
+int myStackPop(MyStack* obj) {
+    return dequeue(&obj->queue1);
+}
+
+// Get the top element
+int myStackTop(MyStack* obj) {
+    return queuePeek(&obj->queue1);
+}
+
+// Returns true if stack is empty
+bool myStackEmpty(MyStack* obj) {
+    return queueEmpty(&obj->queue1);
+}
+
+// Free memory
+void myStackFree(MyStack* obj) {
+    free(obj);
+}
+
+// Main function to demonstrate stack operations
+int main() {
+    MyStack* myStack = myStackCreate();
+
+    // Pushing at least 5 elements
+    myStackPush(myStack, 1);
+    myStackPush(myStack, 2);
+    myStackPush(myStack, 3);
+    myStackPush(myStack, 4);
+    myStackPush(myStack, 5);
+
+    printf("Top element: %d\n", myStackTop(myStack));  // Should return 5
+    printf("Popped element: %d\n", myStackPop(myStack));  // Should return 5
+    printf("Top element: %d\n", myStackTop(myStack));  // Should return 4
+    printf("Popped element: %d\n", myStackPop(myStack));  // Should return 4
+    printf("Top element: %d\n", myStackTop(myStack));  // Should return 3
+    printf("Popped element: %d\n", myStackPop(myStack));  // Should return 3
+    printf("Top element: %d\n", myStackTop(myStack));  // Should return 2
+    printf("Popped element: %d\n", myStackPop(myStack));  // Should return 2
+    printf("Top element: %d\n", myStackTop(myStack));  // Should return 1
+    printf("Popped element: %d\n", myStackPop(myStack));  // Should return 1
+    printf("Is stack empty? %s\n", myStackEmpty(myStack) ? "true" : "false");  // Should return true
+
+    myStackFree(myStack);
+    return 0;
+}
