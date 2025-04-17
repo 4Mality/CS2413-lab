@@ -8,7 +8,7 @@ typedef struct TreeNode {
     struct TreeNode* right;
 } TreeNode;
 
-// Helper to create new node
+// Allocate space for new nodes
 TreeNode* newNode(int val) {
     TreeNode* node = (TreeNode*)malloc(sizeof(TreeNode));
     node->val = val;
@@ -31,17 +31,14 @@ void preorder(TreeNode* root) {
 }
 
 int main() {
-
+    //create new node
     TreeNode* root = newNode(1);
     root->left = newNode(2);
     root->right = newNode(3);
-
     root->left->left = newNode(4);
     root->left->right = newNode(5);
-
     root->left->right->left = newNode(6);
     root->left->right->right = newNode(7);
-
     root->right->right = newNode(8);
     root->right->right->left = newNode(9);
 
@@ -50,7 +47,7 @@ int main() {
     printf("\n");
     
     printf("\n");
-    printf("inorder traversal: ");
+    printf("Inorder Traversal: ");
     inorder(root);
     printf("\n");
     
