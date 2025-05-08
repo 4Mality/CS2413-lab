@@ -1,0 +1,47 @@
+// main.c
+#include <stdio.h>
+#include <stdlib.h>
+
+// Tree node definition
+typedef struct TreeNode {
+    int val;
+    struct TreeNode* left;
+    struct TreeNode* right;
+} TreeNode;
+
+// Create a new tree node
+TreeNode* newNode(int val) {
+    TreeNode* node = (TreeNode*)malloc(sizeof(TreeNode));
+    node->val = val;
+    node->left = NULL;
+    node->right = NULL;
+    return node;
+}
+
+// Recursive function to check mirror symmetry
+int isMirror(TreeNode* t1, TreeNode* t2) {
+    if (!t1 && !t2) return 1;             // Both null, symmetric
+    if (!t1 || !t2) return 0;             // One null, not symmetric
+    return (t1->val == t2->val) &&
+           isMirror(t1->left, t2->right) &&
+           isMirror(t1->right, t2->left);
+}
+
+// Entry function to check tree symmetry
+int isSymmetric(TreeNode* root) {
+    return isMirror(root, root);
+}
+
+int main() {
+    // Example 1: [1, 2, 2, 3, 4, 4, 3]
+    TreeNode* root = newNode(1);
+    root->left = newNode(2);
+    root->right = newNode(2);
+    root->left->left = newNode(3);
+    root->left->right = newNode(4);
+    root->right->left = newNode(4);
+    root->right->right = newNode(3);
+
+    printf("Is symmetric? %s\n", isSymmetric(root) ? "true" : "false");
+    return 0;
+}
