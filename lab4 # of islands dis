@@ -1,0 +1,53 @@
+// main.c
+#include <stdio.h>
+
+#define ROWS 4
+#define COLS 5
+
+// DFS to visit all connected '1's and mark them visited
+void dfs(char grid[ROWS][COLS], int r, int c) {
+    if (r < 0 || c < 0 || r >= ROWS || c >= COLS || grid[r][c] == '0')
+        return;
+    grid[r][c] = '0'; // Mark as visited
+    dfs(grid, r + 1, c);
+    dfs(grid, r - 1, c);
+    dfs(grid, r, c + 1);
+    dfs(grid, r, c - 1);
+}
+
+// Function to count islands
+int numIslands(char grid[ROWS][COLS]) {
+    int count = 0;
+    for (int r = 0; r < ROWS; r++) {
+        for (int c = 0; c < COLS; c++) {
+            if (grid[r][c] == '1') {
+                count++;
+                dfs(grid, r, c);
+            }
+        }
+    }
+    return count;
+}
+
+int main() {
+    // Example 1: 1 island
+    char grid1[ROWS][COLS] = {
+        {'1','1','1','1','0'},
+        {'1','1','0','1','0'},
+        {'1','1','0','0','0'},
+        {'0','0','0','0','0'}
+    };
+
+    // Example 2: 3 islands
+    char grid2[ROWS][COLS] = {
+        {'1','1','0','0','0'},
+        {'1','1','0','0','0'},
+        {'0','0','1','0','0'},
+        {'0','0','0','1','1'}
+    };
+
+    printf("Number of Islands in grid1: %d\n", numIslands(grid1)); // Output: 1
+    printf("Number of Islands in grid2: %d\n", numIslands(grid2)); // Output: 3
+
+    return 0;
+}
